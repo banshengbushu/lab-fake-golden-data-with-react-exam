@@ -1,39 +1,26 @@
 const App = React.createClass({
 
-    getInitialState:function () {
-      return({
+    getInitialAState:function () {
+      return{
           isEditor:true,
           elements:[],
-      })
+      }
     },
+
     toggle:function () {
-      this.setState(
-          {
-              isEditor:!this.state.isEditor,
-          })
+        return({
+            isEditor:!this.state.isEditor,
+        })
     },
-
-    addElement:function (element) {
-      const elements = this.state.elements;
-        elements.push(element);
-        this.setState({elements});
-    },
-
-    deleteElement:function (index) {
-        const elements = this.state.elements;
-        elements.splice(index,1);
-        this.setState({elements});
-    },
-
     render:function(){
-        const isEditor = this.state.isEditor;
+        const isEditor= this.state.isEditor;
         return <div>
             <button onClick={this.toggle}>{isEditor?"Preview":"Edit"}</button>
             <div className={isEditor?"":"hidden"}>
-            <Editor onAdd={this.addElement} elements={this.state.elements} onDelete={this.deleteElement}/>
+            <Editor/>
                 </div>
             <div className={isEditor?"hidden":""}>
-            <Previewer elements={this.state.elements}/>
+            <Previewer/>
                 </div>
         </div>
     }
@@ -42,55 +29,26 @@ const App = React.createClass({
 const Editor = React.createClass({
     render:function(){
         return <div>
-            <Left elements={this.props.elements} onDelete={this.props.onDelete}/>
-            <Right onAdd = {this.props.onAdd}/>
+            <Left/>
+            <Right/>
         </div>
     }
 });
 const Previewer = React.createClass({
     render:function(){
-        const elements = this.props.elements.map((ele,index)=>{
-            return<div>
-                <input type={ele}  disabled="true"/>
-            </div>
-        });
-        return <div>
-            {elements}
-            <button>Submit</button>
-        </div>
-    }
-});
-
-const Right = React.createClass({
-    add:function () {
-        const element = $("input[name=element]:checked").val();
-        this.props.onAdd(element)
-    },
-    render:function(){
-        return <div>
-            <input type="radio" name="element" value="text"/>Text
-            <input type="radio" name="element" value="date"/>Date
-            <button onClick={this.add}>+</button>
-        </div>
+        return <div>Previewer</div>
     }
 });
 
 const Left = React.createClass({
-    remove:function (index) {
-        this.props.onDelete(index)
-    },
     render:function(){
-        const elements = this.props.elements.map((ele,index)=>{
-            if(ele!==undefined){
-                return<div key={index}>
-                    <input type={ele}/>
-                    <button onClick={this.remove.bind(this,index)}>-</button>
-                </div>
-            }
-        });
-        return <div>
-            {elements}
-        </div>
+        return <div>Left</div>
+    }
+});
+
+const Right = React.createClass({
+    render:function(){
+        return <div></div>
     }
 });
 ReactDOM.render(<App />, document.getElementById('content'));

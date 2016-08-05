@@ -5,11 +5,7 @@ const App = React.createClass({
             elements: []
         }
     },
-    toggle: function () {
-        this.setState({
-            isEditor: !this.state.isEditor
-        });
-    },
+
     addElement: function(element) {
         const elements = this.state.elements;
         elements.push(element);
@@ -22,17 +18,26 @@ const App = React.createClass({
     },
     render: function() {
         const isEditor = this.state.isEditor;
-        return <div>
-            <div className="col-md-5 col-md-offset-3">
-            <button onClick={this.toggle} className="btn btn-primary btn-lg btn-block" >{isEditor ? "Preview" : "Edit"}</button>
-                </div>
-            <div className={isEditor ? "" : "hidden"}>
-                <Editor elements={this.state.elements} onAdd={this.addElement} onDelete={this.deleteElement} />
-            </div>
-            <div className={isEditor ? "hidden" : ""}>
-                <Previewer elements={this.state.elements} />
-            </div>
-        </div>;
+        return <div className="col-md-5 col-md-offset-3">
+            <ReactRouter.Link to = "/previewer">
+                {isEditor?"Preview":"Editor"}
+
+            </ReactRouter.Link>
+
+            {this.props.children && React.cloneElement(this.props.children,{
+                elements:this.state.elements,
+                onAdd:this.addElement,
+                onRemove:this.deleteElement
+            }) }
+            </div>;
+
+        // const isEditor = this.state.isEditor;
+        // return <div>
+        //     <div className="col-md-5 col-md-offset-3">
+        //     <button onClick={this.toggle} className="btn btn-primary btn-lg btn-block" >{isEditor ? "Preview" : "Edit"}</button>
+        //         </div>
+        //
+        // </div>;
     }
 });
 
@@ -80,10 +85,10 @@ const Right = React.createClass({
 });
 
 const Previewer = React.createClass({
+
     render: function () {
             const elements = this.props.elements.map((ele, index) => {
-
-                    return <div key={index} className="form-control col-md-3 col-md-offset-3">
+                    return <div key={index} className="col-md-3 col-md-offset-3">
                            <input type={ele} className="input-group-md"/>
                            </div>
             });
@@ -98,4 +103,11 @@ const Previewer = React.createClass({
         </div>;
     }
 });
-ReactDOM.render(<App />, document.getElementById('content'));
+ReactDOM.render(
+    <ReactRouter.Router >
+        <ReactRouter.Route path="/" component = {App}>
+            <ReactRouter.IndexRoute  component = {Editor}/>
+            <ReactRouter.Route path="/previewer" component = {Previewer}/>
+        </ReactRouter.Route>
+    </ReactRouter.Router>
+    , document.getElementById('content'));

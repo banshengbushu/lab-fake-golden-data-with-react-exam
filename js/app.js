@@ -23,7 +23,9 @@ const App = React.createClass({
     render: function() {
         const isEditor = this.state.isEditor;
         return <div>
-            <button onClick={this.toggle}>{isEditor ? "Preview" : "Edit"}</button>
+            <div className="col-md-5 col-md-offset-3">
+            <button onClick={this.toggle} className="btn btn-primary btn-lg btn-block" >{isEditor ? "Preview" : "Edit"}</button>
+                </div>
             <div className={isEditor ? "" : "hidden"}>
                 <Editor elements={this.state.elements} onAdd={this.addElement} onDelete={this.deleteElement} />
             </div>
@@ -49,10 +51,12 @@ const Left = React.createClass({
     },
     render: function() {
         const elements = this.props.elements.map((ele, index) => {
-            return <div key={index}>
-                <input type={ele}/>
-                <button onClick={this.remove.bind(this, index)}>X</button>
-            </div>;
+            if(ele!==undefined) {
+                return <div key={index} className="col-md-6 col-md-offset-1" id="left">
+                    <input type={ele}/>
+                    <button className="btn btn-danger" onClick={this.remove.bind(this, index) }>-</button>
+                </div>;
+            }
         });
 
         return <div>
@@ -65,27 +69,32 @@ const Right = React.createClass({
     add: function () {
         const element = $("input[name=element]:checked").val();
         this.props.onAdd(element);
-        // console.log(element)
     },
     render: function() {
-        return <div>
-            <input type="radio" name="element" value="text" />Text
-            <input type="radio" name="element" value="date" />Date
-            <button onClick={this.add}>+</button>
+        return <div id="right" className="form-group col-md-9 col-md-offset-9">
+            <h3 className="radio"><input type="radio" name="element" value="text"/>Text</h3>
+            <h3 className="radio"><input type="radio" name="element" value="date" />Date</h3>
+            <button onClick={this.add} className="btn btn-info" >+</button>
         </div>
     }
 });
 
 const Previewer = React.createClass({
     render: function () {
-        const elements = this.props.elements.map((ele, index) => {
-            return <div key={index}>
-                <input type={ele}/>
-            </div>;
-        });
-        return <div>
+            const elements = this.props.elements.map((ele, index) => {
+
+                    return <div key={index} className="form-control col-md-3 col-md-offset-3">
+                           <input type={ele} className="input-group-md"/>
+                           </div>
+            });
+
+        return <div id="preview">
             {elements}
-            <button>Submit</button>
+            <div className="col-md-5 col-md-offset-5">
+                <div id="submit">
+            <button className="btn btn-info">Submit</button>
+                </div>
+            </div>
         </div>;
     }
 });

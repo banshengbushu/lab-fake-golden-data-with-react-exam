@@ -5,7 +5,11 @@ const App = React.createClass({
             elements: []
         }
     },
-
+    toggle: function () {
+        this.setState({
+            isEditor: !this.state.isEditor
+        });
+    },
     addElement: function(element) {
         const elements = this.state.elements;
         elements.push(element);
@@ -19,25 +23,18 @@ const App = React.createClass({
     render: function() {
         const isEditor = this.state.isEditor;
         return <div className="col-md-5 col-md-offset-3">
-            <ReactRouter.Link to = "/previewer">
-                {isEditor?"Preview":"Editor"}
+
+            <ReactRouter.Link to = {isEditor?"/previewer":"/"} >
+
+                <button onClick={this.toggle}>{isEditor?"Preview":"Editor"}</button>
 
             </ReactRouter.Link>
-
             {this.props.children && React.cloneElement(this.props.children,{
                 elements:this.state.elements,
                 onAdd:this.addElement,
-                onRemove:this.deleteElement
+                onDelete:this.deleteElement
             }) }
             </div>;
-
-        // const isEditor = this.state.isEditor;
-        // return <div>
-        //     <div className="col-md-5 col-md-offset-3">
-        //     <button onClick={this.toggle} className="btn btn-primary btn-lg btn-block" >{isEditor ? "Preview" : "Edit"}</button>
-        //         </div>
-        //
-        // </div>;
     }
 });
 
@@ -106,7 +103,7 @@ const Previewer = React.createClass({
 ReactDOM.render(
     <ReactRouter.Router >
         <ReactRouter.Route path="/" component = {App}>
-            <ReactRouter.IndexRoute  component = {Editor}/>
+            <ReactRouter.IndexRoute component = {Editor}/>
             <ReactRouter.Route path="/previewer" component = {Previewer}/>
         </ReactRouter.Route>
     </ReactRouter.Router>
